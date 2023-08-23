@@ -74,33 +74,27 @@ describe('asyncSumOfArraySometimesZero test', () => {
         // SetUp
         const array: number[] = [];
         const databaseMock: IDatabaseMock = new SuccessDatabaseMock();
-        // Exercise
-        const actual: number = await asyncSumOfArraySometimesZero(array, databaseMock);
-        // Verify
-        expect(actual).toBe(0);
-    })
+        // Exercise, Verify
+        await expect(asyncSumOfArraySometimesZero(array, databaseMock)).rejects.toBe(0);
+    });
     
     test('Saving numbers failed and sum of [1 ,2, 3] should be 0', async () => {
         // SetUp
         const array: number[] = [1, 2, 3];
         const databaseMock: IDatabaseMock = new ThrowDatabaseMock();
-        // Exercise
-        const actual: number = await asyncSumOfArraySometimesZero(array, databaseMock);
-        // verify
-        expect(actual).toBe(0);
-    })
+        // Exercise, Verify
+        await expect(asyncSumOfArraySometimesZero(array, databaseMock)).rejects.toBe(0);
+    });
 
     test('Saving numbers failed and sum of empty array should be 0', async () =>{
         // SetUp
         const array: number[] = [1, 2, 3];
         const databaseMock: IDatabaseMock = new ThrowDatabaseMock();
-        // Exercise
-        const actual: number = await asyncSumOfArraySometimesZero(array, databaseMock);
-        // Verify
-        expect(actual).toBe(0);
+        // Exercise, Verify
+        await expect(asyncSumOfArraySometimesZero(array, databaseMock)).rejects.toBe(0);
     });
 
-})
+});
 
 describe('getFirstNameThrowIfLong test', () => {
 
@@ -121,4 +115,4 @@ describe('getFirstNameThrowIfLong test', () => {
         // Exercise, Verify
         await expect(getFirstNameThrowIfLong(maxNameLength, nameApiService)).rejects.toThrowError("first_name too long");
     });
-})
+});

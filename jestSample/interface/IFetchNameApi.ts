@@ -1,3 +1,5 @@
+import { UserName } from "../API/FetchNameApi";
+
 export interface IFetchNameApi{
-    getFirstName(): Promise<string>;
+    getUserName(): Promise<UserName>;
 }

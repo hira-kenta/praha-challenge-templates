@@ -15,13 +15,13 @@ export const asyncSumOfArraySometimesZero = (
   numbers: number[],
   databaseMock : IDatabaseMock
 ): Promise<number> => {
-  return new Promise((resolve): void => {
+  return new Promise((resolve, reject): void => {
     try {
       const database: IDatabaseMock = databaseMock;
       database.save(numbers);
       resolve(sumOfArray(numbers));
     } catch (error) {
-      resolve(0);
+      reject(0);
     }
   });
 };

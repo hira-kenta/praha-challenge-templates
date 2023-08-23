@@ -1,26 +1,33 @@
 import { IFetchNameApi } from "../interface/IFetchNameApi";
 import axios from "axios";
 
+// add : APIから返ってくる値を格納するUserName
+export interface UserName{
+    id: string;
+    name: string;
+    first_name: string;
+    last_name: string;
+}
+
 export class FetchNameApi implements IFetchNameApi{
-    public async getFirstName(): Promise<string>{
-        const { data } = await axios.get(
+    // fix : UserName型のデータを返却するよう修正
+    // 修正前の状態だと文字列を返すという情報のみにとどまるため、firstNameが返ってきたのか不透明なまま利用することになる。
+    public async getUserName(): Promise<UserName>{
+        const { data } = await axios.get<UserName>(
             "https://random-data-api.com/api/name/random_name"
         );
-
-        const firstName = data.first_name as string;
-
-        return firstName;
+        return data;
     };
 };
 
 export class FetchNameApiMock implements IFetchNameApi{
-    private firstName: string;
-
-    constructor(firstName: string){
-        this.firstName = firstName;
+    private userName: UserName;
+    
+    constructor(userName: UserName){
+        this.userName = userName;
     }
-
-    public async getFirstName(): Promise<string>{
-        return this.firstName;
+    
+    public async getUserName(): Promise<UserName>{
+        return this.userName;
     }
-}
+};
