@@ -88,7 +88,7 @@ describe('asyncSumOfArraySometimesZero test', () => {
 
     test('Saving numbers failed and sum of empty array should be 0', async () =>{
         // SetUp
-        const array: number[] = [1, 2, 3];
+        const array: number[] = [];
         const databaseMock: IDatabaseMock = new ThrowDatabaseMock();
         // Exercise, Verify
         await expect(asyncSumOfArraySometimesZero(array, databaseMock)).rejects.toBe(0);
