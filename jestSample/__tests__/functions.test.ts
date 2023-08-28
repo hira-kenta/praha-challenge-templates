@@ -21,13 +21,22 @@ describe('sumOfArray test', () => {
         const actual: number = sumOfArray(array);
         // Verify
         expect(actual).toBe(6.2);
-    })
+    });
     
-    test('Sum of empty array should throw exception', () => {
+    // disabled: テストコードを書き換えるためコメントアウト
+    // test('Sum of empty array should throw exception', () => {
+    //     // SetUp
+    //     const array: number[] = [];
+    //     // Exercise, Verify
+    //     expect(() => sumOfArray(array)).toThrow(Error);
+    // });
+    test('Sum of empty array should be 0', () =>{
         // SetUp
         const array: number[] = [];
-        // Exercise, Verify
-        expect(() => sumOfArray(array)).toThrow(Error);
+        // Exercise
+        const actual: number = sumOfArray(array);
+        // Verify
+        expect(actual).toBe(0);
     });
 });
 
@@ -50,11 +59,20 @@ describe('asyncSumOfArray', () => {
         expect(actual).toBe(6.2);
     });
 
-    test('Sum of empty array should throw exception', async () => {
+    // disabled: テストコードを書き換えるためコメントアウト
+    // test('Sum of empty array should throw exception', async () => {
+    //     // SetUp
+    //     const array: number[] = [];
+    //     // Exercise, Verify
+    //     await expect(asyncSumOfArray(array)).rejects.toThrow(Error);
+    // });
+    test('Sum of empty array should be 0', async () => {
         // SetUp
         const array: number[] = [];
-        // Exercise, Verify
-        await expect(asyncSumOfArray(array)).rejects.toThrow(Error);
+        // Exercise
+        const actual: number = await asyncSumOfArray(array);
+        // Verify
+        expect(actual).toBe(0);
     });
 });
 
@@ -75,7 +93,8 @@ describe('asyncSumOfArraySometimesZero test', () => {
         const array: number[] = [];
         const databaseMock: IDatabaseMock = new SuccessDatabaseMock();
         // Exercise, Verify
-        await expect(asyncSumOfArraySometimesZero(array, databaseMock)).rejects.toBe(0);
+        // fix : 関数の修正によりresolveが返るようになったため
+        await expect(asyncSumOfArraySometimesZero(array, databaseMock)).resolves.toBe(0);
     });
     
     test('Saving numbers failed and sum of [1 ,2, 3] should be 0', async () => {
