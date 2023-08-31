@@ -35,19 +35,18 @@ export class RockPaperScissors{
     public play(hand: string): string{
         if(!this.HANDS.includes(hand)) throw Error("入力に誤りがあります！");
         const handOfEnemy: string = this.enemy.getRandomHand();
- 
+
         if(hand == handOfEnemy) return Result.DRAW;
-        
-        switch(hand){
-            case "rock":
-                return handOfEnemy == "scissors" ? Result.WIN : Result.LOSE;
-            case "papaer":
-                return handOfEnemy == "rock" ? Result.WIN : Result.LOSE;
-            case "scissors":
-                return handOfEnemy == "paper" ? Result.WIN : Result.LOSE;
-            default:
-                return Result.DRAW;
-        };
+
+        if(hand == "rock"){
+            return handOfEnemy == "scissors" ? Result.WIN : Result.LOSE;
+        }
+
+        if(hand == "paper"){
+            return handOfEnemy == "rock" ? Result.WIN : Result.LOSE;
+        }
+
+        return handOfEnemy == "paper" ? Result.WIN : Result.LOSE;
     }
 };
 
