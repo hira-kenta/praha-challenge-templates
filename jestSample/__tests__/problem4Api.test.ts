@@ -23,17 +23,17 @@ jest.mock('axios', () => ({
 }));
 
 describe("FetchResultBloodTypeApi", () => {
-    test("", async () => {
+    
+    test("APIからデータを取得できた場合、BloodTypeTestオブジェクトが返される", async () => {
         // Arrange
         const fetchResultBloodTypeApi: FetchResultBloodTypeApi = new FetchResultBloodTypeApi;
         // Act
         const actual: BloodTypeTest = await fetchResultBloodTypeApi.getResultBloodTypeTest(1);
-        console.log(actual)
         // Assert
         expect(actual).toEqual(successData);
     });
 
-    test("", async () => {
+    test("APIからデータが取得できなかった場合、プロパティがundefinedのBloodTypeTestオブジェクトが返される", async () => {
         // Arrange
         const fetchResultBloodTypeApi: FetchResultBloodTypeApi = new FetchResultBloodTypeApi;
         mockError = true;

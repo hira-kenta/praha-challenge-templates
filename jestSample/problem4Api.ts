@@ -12,7 +12,6 @@ export class FetchResultBloodTypeApi implements IFetchResultBloodTypeApi{
         var url: string = "https://my-json-server.typicode.com/hira-kenta/bloodTypeTestApi/bloodTypeTests/" + bloodTypeId;
         try{
             var { data } = await axios.get<BloodTypeTest>(url);
-            console.log(data)
             return data;
         }catch(e){
             data = {
