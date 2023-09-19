@@ -62,42 +62,48 @@ describe("RockPaperScissors", () => {
     const enemyHandIsRock: RockPaperScissors = new RockPaperScissors(enemyChoiseRock);
     const enemyHandIsScissors: RockPaperScissors = new RockPaperScissors(enemyChoiseScissors);
     const enemyHandIsPaper: RockPaperScissors = new RockPaperScissors(enemyChoisePaper);
+    
+    describe('Enemyがグーを出す場合', () => {
+        test.each`
+        myHand       | expected
+       ${"paper"}    | ${"あなたの勝ちです"}
+       ${"scissors"} | ${"あなたの負けです"}
+       ${"rock"}     | ${"あいこです"}
+       `("自分の手が $myHand の場合、$expected が返却される ", ({myHand, expected}) => {
+            // Act
+            const actual: string = enemyHandIsRock.play(myHand);
+            // Assert
+            expect(actual).toBe(expected);
+        });
+    })
 
-    test.each`
-    myHand       |  enemyHand     | expected
-   ${"paper"}    |  ${"rock"}     | ${"あなたの勝ちです"}
-   ${"scissors"} |  ${"rock"}     | ${"あなたの負けです"}
-   ${"rock"}     |  ${"rock"}     | ${"あいこです"}
-   `("自分の手が $myHand 、相手の手が $enemyHand の場合、$expected が返却される ", ({myHand, enemyHand, expected}) => {
-        // Act
-        const actual: string = enemyHandIsRock.play(myHand);
-        // Assert
-        expect(actual).toBe(expected);
-    });
+    describe('Enemyがチョキを出す場合', () => {
+        test.each`
+         myHand       | expected
+        ${"rock"}     | ${"あなたの勝ちです"}
+        ${"paper"}    | ${"あなたの負けです"}
+        ${"scissors"} | ${"あいこです"}
+        `("自分の手が $myHand の場合、$expected が返却される ", ({myHand, expected}) => {
+            // Act
+            const actual: string = enemyHandIsScissors.play(myHand);
+            // Assert
+            expect(actual).toBe(expected);
+        });
+    })
 
-    test.each`
-     myHand       |  enemyHand     | expected
-    ${"rock"}     |  ${"scissors"} | ${"あなたの勝ちです"}
-    ${"paper"}    |  ${"scissors"} | ${"あなたの負けです"}
-    ${"scissors"} |  ${"scissors"} | ${"あいこです"}
-    `("自分の手が $myHand 、相手の手が $enemyHand の場合、$expected が返却される ", ({myHand, enemyHand, expected}) => {
-        // Act
-        const actual: string = enemyHandIsScissors.play(myHand);
-        // Assert
-        expect(actual).toBe(expected);
-    });
-
-    test.each`
-     myHand       |  enemyHand     | expected
-    ${"scissors"} |  ${"paper"}    | ${"あなたの勝ちです"}
-    ${"rock"}     |  ${"paper"}    | ${"あなたの負けです"}
-    ${"paper"}    |  ${"paper"}    | ${"あいこです"}
-    `("自分の手が $myHand 、相手の手が $enemyHand の場合、$expected が返却される ", ({myHand, enemyHand, expected}) => {
-        // Act
-        const actual: string = enemyHandIsPaper.play(myHand);
-        // Assert
-        expect(actual).toBe(expected);
-    });
+    describe('Enemyがパーを出す場合', () => {
+        test.each`
+         myHand       | expected
+        ${"scissors"} | ${"あなたの勝ちです"}
+        ${"rock"}     | ${"あなたの負けです"}
+        ${"paper"}    | ${"あいこです"}
+        `("自分の手が $myHand の場合、$expected が返却される ", ({myHand, expected}) => {
+            // Act
+            const actual: string = enemyHandIsPaper.play(myHand);
+            // Assert
+            expect(actual).toBe(expected);
+        });
+    })
 
     test("「rock」か「paper」か「scissors」以外の文字列を入力した場合、例外がthrowされる", () => {
         // Arrange
@@ -106,16 +112,34 @@ describe("RockPaperScissors", () => {
         // Act, Assert
         expect(() => rockPaperScissors.play("invalid")).toThrowError("入力に誤りがあります！");
     })
-})
 
-describe('Enemy', () => {
-    it('「rock」か「paper」か「scissors」が返却される', () => {
-        const enemy = new Enemy();
-        const possibleHands = ["rock", "paper", "scissors"];
+    describe('Enemy', () => {
+        // 乱数のテストになっていたため、Math.random()をモック化してテストするように修正
+        // test('「rock」か「paper」か「scissors」が返却される', () => {
+        //     const enemy = new Enemy();
+        //     const possibleHands = ["rock", "paper", "scissors"];
+    
+        //     for (let i = 0; i < 1000; i++) { 
+        //         const randomHand = enemy.getRandomHand();
+        //         expect(possibleHands).toContain(randomHand);
+        //     }
+        // });
+        let randomSpy: jest.SpyInstance;
 
-        for (let i = 0; i < 1000; i++) { 
-            const randomHand = enemy.getRandomHand();
-            expect(possibleHands).toContain(randomHand);
-        }
+        beforeEach(() => {
+            randomSpy = jest.spyOn(Math, 'random');
+            randomSpy.mockReturnValue(0.5);
+        })
+
+        afterEach(() => {
+            randomSpy.mockRestore();
+        })
+
+        test('乱数の返り値に応じてgetRandomHand()が正しい手を返す', () => {
+            const enemy = new Enemy();
+            const actual = enemy.getRandomHand();
+
+            expect(actual).toBe('paper');
+        });
     });
-});
+})
