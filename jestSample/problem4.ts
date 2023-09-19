@@ -1,4 +1,5 @@
 import { BloodTypeTest, FetchResultBloodTypeApi, IFetchResultBloodTypeApi } from "./problem4Api";
+import { IEnemy, Enemy } from "./rockPaperScissorsEnemy";
 
 // (1)徒歩約何分以内かを計算する関数。
 // 　10分より時間がかかる場合、近い5の倍数に切り上げる。（11分→15分、26分→30分）
@@ -28,7 +29,7 @@ export const showResultBloodTypeTest = async (bloodTypeId: number, apiFetcher: I
 // rock、paper、scissorsのどれかをplay()に渡すことでじゃんけんができます。
 // 上記以外の入力を受け付けた場合、例外がthrowされます。
 export class RockPaperScissors{
-    private readonly HANDS: string[] = ["rock", "paper", "scissored"]; 
+    private readonly HANDS: string[] = ["rock", "paper", "scissors"]; 
     private enemy: IEnemy;
     constructor(enemy?: IEnemy) {
         this.enemy = enemy || new Enemy();
@@ -57,29 +58,3 @@ const Result= {
     LOSE: "あなたの負けです",
     DRAW: "あいこです"
 } as const;
-
-interface IEnemy {
-    getRandomHand(): string;
-}
-
-// あいて（グーチョキパーをランダムで出してくれます）
-class Enemy implements IEnemy {
-    public getRandomHand(): string{
-        const hands = ["rock", "paper", "scissors"];
-        const index = Math.floor(Math.random() * hands.length);
-        return hands[index];
-    }
-};
-
-// Mock class
-export class MockEnemy implements IEnemy {
-    private hand: string;
-
-    constructor(hand: string) {
-        this.hand = hand;
-    }
-
-    public getRandomHand(): string {
-        return this.hand;
-    }
-}

@@ -1,5 +1,6 @@
-import { MockEnemy, RockPaperScissors, calculateWalkingTimeInMinutes, showResultBloodTypeTest } from "../problem4";
+import { RockPaperScissors, calculateWalkingTimeInMinutes, showResultBloodTypeTest } from "../problem4";
 import { MockFailedFetchResultBloodTypeApi, MockSuccessFetchResultBloodTypeApi } from "../problem4Api";
+import { MockEnemy } from "../rockPaperScissorsEnemy";
 
 describe('# calculationWakingTimeInMinute \n', () => {
   test('- distanceInMetersが-1未満の場合、Error\'0より大きい数値を入力してください。\'がスローされる \n', () => {
@@ -43,40 +44,61 @@ describe('# showResultBloodTypeTest \n', () => {
 })
 
 describe('# play \n', () => {
-  test('## 不正な値を渡した場合、Error"入力に誤りがあります！"がスローされる \n', () => {
+  test('- 不正な値を渡した場合、Error"入力に誤りがあります！"がスローされる \n', () => {
     // 準備
     let rockPaperScissors = new RockPaperScissors();
     // 実行 確認
     expect(() => rockPaperScissors.play('グー')).toThrow(Error("入力に誤りがあります！"));
   })
 
-  describe('## 正な値を入力した場合、じゃんけんの結果が返ってくる \n', () => {
-    test('- じゃんけんに勝った場合、"あなたの勝ちです"が返ってくる \n', () => {
-      // 準備
-      let mockEnemy = new MockEnemy("rock");
-      let rockPaperScissors = new RockPaperScissors(mockEnemy);
-      // 実行
-      let result = rockPaperScissors.play("paper");
-      // 確認
-      expect(result).toBe("あなたの勝ちです");
+  describe('## 正しい値を入力した場合、じゃんけんの結果が返ってくる \n', () => {
+    describe('### じゃんけんに勝った場合、"あなたの勝ちです"が返ってくる \n', () => {
+      test.each`
+      my            | enemy
+      ${"rock"}     | ${"scissors"}  
+      ${"paper"}    | ${"rock"}  
+      ${"scissors"} | ${"paper"}
+      `("- 自分が$my、敵が$enemy \n", ({my, enemy}) => {
+        // 準備
+        let mockEnemy = new MockEnemy(enemy);
+        let rockPaperScissors = new RockPaperScissors(mockEnemy);
+        // 実行
+        let result = rockPaperScissors.play(my);
+        // 確認
+        expect(result).toBe("あなたの勝ちです");
+      })
     })
-    test('- じゃんけんに負けた場合、"あなたの負けです"が返ってくる \n', () => {
-      // 準備
-      let mockEnemy = new MockEnemy("rock");
-      let rockPaperScissors = new RockPaperScissors(mockEnemy);
-      // 実行
-      let result = rockPaperScissors.play("scissored");
-      // 確認
-      expect(result).toBe("あなたの負けです");
+    describe('### じゃんけんに負けた場合、"あなたの負けです"が返ってくる \n', () => {
+      test.each`
+      my            | enemy
+      ${"rock"}     | ${"paper"}  
+      ${"paper"}    | ${"scissors"}  
+      ${"scissors"} | ${"rock"}
+      `("- 自分が$my、敵が$enemy \n", ({my, enemy}) => {
+        // 準備
+        let mockEnemy = new MockEnemy(enemy);
+        let rockPaperScissors = new RockPaperScissors(mockEnemy);
+        // 実行
+        let result = rockPaperScissors.play(my);
+        // 確認
+        expect(result).toBe("あなたの負けです");
+      })
     })
-    test('- じゃんけんがあいこだった場合、"あいこです"が返ってくる \n', () => {
-      // 準備
-      let mockEnemy = new MockEnemy("rock");
-      let rockPaperScissors = new RockPaperScissors(mockEnemy);
-      // 実行
-      let result = rockPaperScissors.play("rock");
-      // 確認
-      expect(result).toBe("あいこです");
+    describe('### じゃんけんがあいこだった場合、"あいこです"が返ってくる \n', () => {
+      test.each`
+      my            | enemy
+      ${"rock"}     | ${"rock"}  
+      ${"paper"}    | ${"paper"}  
+      ${"scissors"} | ${"scissors"}
+      `("- 自分が$my、敵が$enemy \n", ({my, enemy}) => {
+        // 準備
+        let mockEnemy = new MockEnemy(enemy);
+        let rockPaperScissors = new RockPaperScissors(mockEnemy);
+        // 実行
+        let result = rockPaperScissors.play(my);
+        // 確認
+        expect(result).toBe("あいこです");
+      })
     })
   })
 })
