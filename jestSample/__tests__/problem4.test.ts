@@ -106,7 +106,7 @@ describe("showResultBloodTypeTestのテスト", () => {
 describe("RockPaperScissorsのテスト：相手がグーの時のテスト", () => {
   let mockOnlyRockHand: jest.Mock;
   let janken: RockPaperScissors;
-
+  let original = Enemy.prototype.getRandomHand;
   beforeEach(() => {
     janken = new RockPaperScissors();
     mockOnlyRockHand = jest.fn();
@@ -116,6 +116,7 @@ describe("RockPaperScissorsのテスト：相手がグーの時のテスト", ()
 
   afterEach(() => {
     mockOnlyRockHand.mockRestore();
+    Enemy.prototype.getRandomHand = original;
   });
   test("自分がグーを出した時はあいこ", async () => {
     // SetUp
@@ -146,6 +147,7 @@ describe("RockPaperScissorsのテスト：相手がグーの時のテスト", ()
 describe("RockPaperScissorsのテスト：相手がパーの時のテスト", () => {
   let mockOnlyPaperHand: jest.Mock;
   let janken: RockPaperScissors;
+  let original = Enemy.prototype.getRandomHand;
 
   beforeEach(() => {
     janken = new RockPaperScissors();
@@ -156,6 +158,7 @@ describe("RockPaperScissorsのテスト：相手がパーの時のテスト", ()
 
   afterEach(() => {
     mockOnlyPaperHand.mockRestore();
+    Enemy.prototype.getRandomHand = original;
   });
   test("自分がパーを出した時はあいこ", async () => {
     // SetUp
