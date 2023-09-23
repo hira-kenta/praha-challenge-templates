@@ -1,4 +1,4 @@
-import axios from "axios";
+import { FetchResultBloodTypeApi } from "../problem4Api";
 import {
   calculateWalkingTimeInMinutes,
   showResultBloodTypeTest,
@@ -59,20 +59,26 @@ describe("showResultBloodTypeTestのテスト", () => {
     text: "少しおおざっぱな性格です。",
   };
 
+  const faluerData: BloodTypeTest = {
+    id: undefined,
+    bloodTypeId: undefined,
+    text: undefined,
+  };
+
+  let apiSpy: jest.SpyInstance;
   beforeEach((): void => {
-    jest.mock("axios");
+    apiSpy = jest.spyOn(
+      FetchResultBloodTypeApi.prototype,
+      "getResultBloodTypeTest"
+    );
   });
   afterEach((): void => {
-    jest.restoreAllMocks();
+    apiSpy.mockRestore();
   });
   test("1～4を選択した時は「性格診断結果」が返される。", async () => {
     // SetUp
-    // axiosをスパイ。Mockを返すように
-    const axioxGetSuccessSpy = jest
-      .spyOn(axios, "get")
-      .mockImplementation(async () => ({
-        data: mockData,
-      }));
+    // FetchResultBloodTypeApiをスパイ。Mockを返すように
+    const apiGetSuccessSpy = apiSpy.mockImplementation(async () => mockData);
     const expectText = mockData.text;
     // Exercise
     [1, 2, 3, 4].map((bloodId) => {
@@ -81,16 +87,12 @@ describe("showResultBloodTypeTestのテスト", () => {
       expect(actual).resolves.toBe(expectText);
     });
     // TearDown
-    axioxGetSuccessSpy.mockRestore();
+    apiGetSuccessSpy.mockRestore();
   });
   test("apiが失敗した時は「診断結果が取得できませんでした。」が返される。", async () => {
     // SetUp
-    // axiosでエラーを返すmock
-    const axioxFailureSpy = jest
-      .spyOn(axios, "get")
-      .mockImplementation(
-        (): Promise<BloodTypeTest> => new Promise((_, reject) => reject({}))
-      );
+    // FetchResultBloodTypeApiでエラーを返すmock
+    const apiFailureSpy = apiSpy.mockImplementation(async () => faluerData);
 
     const expectText = "診断結果が取得できませんでした。";
     // Exercise
@@ -98,7 +100,7 @@ describe("showResultBloodTypeTestのテスト", () => {
     // Verify
     expect(actual).resolves.toBe(expectText);
     // TearDown
-    axioxFailureSpy.mockRestore();
+    apiFailureSpy.mockRestore();
   });
 });
 describe("RockPaperScissorsのテスト：相手がグーの時のテスト", () => {
@@ -184,7 +186,7 @@ describe("RockPaperScissorsのテスト：相手がパーの時のテスト", ()
 describe("RockPaperScissorsのテスト：相手がチョキの時のテスト", () => {
   let mockOnlyScissorsHand: jest.Mock;
   let janken: RockPaperScissors;
-
+  let original = Enemy.prototype.getRandomHand;
   beforeEach(() => {
     janken = new RockPaperScissors();
     mockOnlyScissorsHand = jest.fn();
@@ -194,6 +196,7 @@ describe("RockPaperScissorsのテスト：相手がチョキの時のテスト",
 
   afterEach(() => {
     mockOnlyScissorsHand.mockRestore();
+    Enemy.prototype.getRandomHand = original;
   });
   test("自分がチョキを出した時はあいこ", async () => {
     // SetUp
@@ -230,4 +233,23 @@ describe("RockPaperScissorsのテスト：3手以外を出した時", () => {
     // Verify
     expect(actual).toThrow(expectErrorMessage);
   });
+});
+describe("Enemyテスト", () => {
+  test.each`
+    random | expected
+    ${0.2} | ${"rock"}
+    ${0.5} | ${"paper"}
+    ${0.7} | ${"scissors"}
+  `(
+    "randomで出た値 $random によって $expected が出る。",
+    ({ random, expected }) => {
+      const randomSpy = jest
+        .spyOn(global.Math, "random")
+        .mockReturnValue(random);
+      const actual = new Enemy().getRandomHand();
+      expect(actual).toBe(expected);
+
+      randomSpy.mockRestore();
+    }
+  );
 });
